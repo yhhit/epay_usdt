@@ -59,9 +59,6 @@
             </div>
         </div>
     </div>
-    <div class="footer">
-        <p>Powered by <a href="https://github.com/v03413/epay_usdt" target="_blank">莫名博客</a></p>
-    </div>
 </div>
 <script src="<?= PLUGIN_STATIC ?>/js/jquery.min.js"></script>
 <script src="<?= PLUGIN_STATIC ?>/js/clipboard.min.js"></script>

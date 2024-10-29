@@ -6,7 +6,7 @@ class usdt_plugin
     public static $info = [
         'name'     => 'usdt',
         'showname' => 'USDT 收款插件',
-        'author'   => '莫名',
+        'author'   => 'test',
         'link'     => 'https://qzone.work/codes/741.html',
         'types'    => ['usdt'],
         'inputs'   => [
@@ -61,19 +61,30 @@ class usdt_plugin
     public static function getRate(): float
     {
         global $channel;
-
-        if (isset($channel['appkey']) && $channel['appkey'] > 0) {
-
+    
+        if (isset($channel['appkey']) && floatval($channel['appkey']) > 0) {
             return floatval($channel['appkey']);
         }
-
+    
         $api    = 'https://api.coinmarketcap.com/data-api/v3/cryptocurrency/detail/chart?id=825&range=1H&convertId=2787';
         $resp   = get_curl($api);
         $data   = json_decode($resp, true);
+    
+        // 检查 $data 是否有效
+        if (!$data || !isset($data['data']['points'])) {
+            // 记录错误日志或抛出异常
+            // 可以选择返回一个默认汇率，或者根据业务需求处理
+            throw new Exception("获取汇率失败，请稍后重试。");
+        }
+    
         $points = $data['data']['points'];
         $point  = array_pop($points);
-
-        return floatval($point['c'][0]);
+        $rate = floatval($point['c'][0]);
+        if (!$rate || $rate <= 0) {
+            throw new Exception("无效的汇率值。");
+        }
+        
+        return $rate;
     }
 
     public static function cron(array $channel)
